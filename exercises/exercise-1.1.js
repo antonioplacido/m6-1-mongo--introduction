@@ -1,5 +1,7 @@
 const { MongoClient } = require("mongodb");
 
+require("dotenv").config();
+
 const { MONGO_URI } = process.env;
 
 const options = {
@@ -9,6 +11,7 @@ const options = {
 
 const dbFunction = async (dbName) => {
   // creates a new client
+  console.log(MONGO_URI);
   const client = await MongoClient(MONGO_URI, options);
   // connect to the client
   await client.connect();
@@ -16,9 +19,11 @@ const dbFunction = async (dbName) => {
   const db = client.db(dbName); // <-- changed this as well
   console.log("connected!");
   // close the connection to the database server
+
+  await db.collection("users").insertOne({ name: "Buck Rogers" });
+
   client.close();
   console.log("disconnected!");
-  console.log(MONGO_URI);
 };
 
 dbFunction("exercise_1");
