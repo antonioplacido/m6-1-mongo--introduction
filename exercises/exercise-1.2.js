@@ -19,7 +19,7 @@ export default const getCollection = async (dbName) => {
 
   const users = await db.collection("users").find().toArray();
 
-  // await db.collection("users").insertOne({ name: "Buck Rogers" });
+  await db.collection("users").insertOne({ name: "Buck Rogers" });
   console.log(users);
   client.close();
   console.log("disconnected!");
