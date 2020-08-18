@@ -10,6 +10,21 @@ const options = {
   useUnifiedTopology: true,
 };
 
+const getGreeting = async (req, res) => {
+  let _id = req.param._id;
+
+  const client = await MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("exercise_1");
+
+  db.collection("greetings").findOne({ _id }, (err, result) => {
+    result
+      ? res.status(200).json({ status: 200, _id, data: result })
+      : res.status(404).json({ status: 404, _id, data: "Not Found" });
+    client.close();
+  });
+};
+
 const createGreeting = async (req, res) => {
   try {
     const client = await MongoClient(MONGO_URI, options);
@@ -27,4 +42,4 @@ const createGreeting = async (req, res) => {
   client.close();
 };
 
-module.exports = { createGreeting };
+module.exports = { createGreeting, getGreeting };
