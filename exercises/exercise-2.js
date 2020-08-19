@@ -10,6 +10,38 @@ const options = {
   useUnifiedTopology: true,
 };
 
+const getGreetings = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("exercise_1");
+
+  const greetings = await db.collection("greetings").find().toArray();
+
+  let start = 0;
+  let limit = 25;
+
+  if (req.query.start !== undefined) {
+    start = Number(req.query.start);
+  }
+  if (req.query.limit !== undefined) {
+    limit = Number(req.query.limit);
+  }
+
+  const firstGreetings = greetings.slice(0, 25);
+
+  if (greetings) {
+    res.status(200).json({
+      status: 200,
+      message: "Below for a list of languages",
+      data: greetings.slice(start, start + limit),
+    });
+  } else {
+    res.status(404).send("404");
+  }
+
+  client.close();
+};
+
 const getGreeting = async (req, res) => {
   let _id = req.params._id;
 
@@ -43,4 +75,4 @@ const createGreeting = async (req, res) => {
   client.close();
 };
 
-module.exports = { createGreeting, getGreeting };
+module.exports = { createGreeting, getGreeting, getGreetings };
